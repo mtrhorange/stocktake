@@ -15,7 +15,7 @@ describe('Operation e2e test', () => {
   const operationPageUrlPattern = new RegExp('/operation(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const operationSample = { date: '2015-08-05T00:49:48.690Z', amount: 32417.83 };
+  const operationSample = { date: '2015-08-05T05:55:06.001Z', amount: 26695.27 };
 
   let operation;
 
@@ -136,7 +136,9 @@ describe('Operation e2e test', () => {
       });
 
       it('last delete button click should delete instance of Operation', () => {
+        cy.intercept('GET', '/api/operations/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
+        cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('operation').should('exist');
         cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
@@ -160,15 +162,15 @@ describe('Operation e2e test', () => {
     });
 
     it('should create an instance of Operation', () => {
-      cy.get(`[data-cy="date"]`).type('2015-08-04T18:29');
+      cy.get(`[data-cy="date"]`).type('2015-08-05T10:16');
       cy.get(`[data-cy="date"]`).blur();
-      cy.get(`[data-cy="date"]`).should('have.value', '2015-08-04T18:29');
+      cy.get(`[data-cy="date"]`).should('have.value', '2015-08-05T10:16');
 
-      cy.get(`[data-cy="description"]`).type('phew shrilly');
-      cy.get(`[data-cy="description"]`).should('have.value', 'phew shrilly');
+      cy.get(`[data-cy="description"]`).type('however finally');
+      cy.get(`[data-cy="description"]`).should('have.value', 'however finally');
 
-      cy.get(`[data-cy="amount"]`).type('18114.57');
-      cy.get(`[data-cy="amount"]`).should('have.value', '18114.57');
+      cy.get(`[data-cy="amount"]`).type('30465.75');
+      cy.get(`[data-cy="amount"]`).should('have.value', '30465.75');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

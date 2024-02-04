@@ -3,7 +3,7 @@
     "changelogDate": "20150805124838"
   },
   "changelogDate": "20150805124838",
-  "dto": "no",
+  "dto": "mapstruct",
   "entityTableName": "bank_account",
   "fields": [
     {

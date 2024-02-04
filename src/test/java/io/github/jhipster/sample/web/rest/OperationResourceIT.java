@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.github.jhipster.sample.IntegrationTest;
 import io.github.jhipster.sample.domain.Operation;
 import io.github.jhipster.sample.repository.OperationRepository;
+import io.github.jhipster.sample.service.dto.OperationDTO;
+import io.github.jhipster.sample.service.mapper.OperationMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -63,6 +65,9 @@ class OperationResourceIT {
     private OperationRepository operationRepositoryMock;
 
     @Autowired
+    private OperationMapper operationMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -102,8 +107,9 @@ class OperationResourceIT {
     void createOperation() throws Exception {
         int databaseSizeBeforeCreate = operationRepository.findAll().size();
         // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
         restOperationMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operation)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operationDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Operation in the database
@@ -120,12 +126,13 @@ class OperationResourceIT {
     void createOperationWithExistingId() throws Exception {
         // Create the Operation with an existing ID
         operation.setId(1L);
+        OperationDTO operationDTO = operationMapper.toDto(operation);
 
         int databaseSizeBeforeCreate = operationRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOperationMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operation)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operationDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Operation in the database
@@ -141,9 +148,10 @@ class OperationResourceIT {
         operation.setDate(null);
 
         // Create the Operation, which fails.
+        OperationDTO operationDTO = operationMapper.toDto(operation);
 
         restOperationMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operation)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operationDTO)))
             .andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
@@ -158,9 +166,10 @@ class OperationResourceIT {
         operation.setAmount(null);
 
         // Create the Operation, which fails.
+        OperationDTO operationDTO = operationMapper.toDto(operation);
 
         restOperationMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operation)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operationDTO)))
             .andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
@@ -238,12 +247,13 @@ class OperationResourceIT {
         // Disconnect from session so that the updates on updatedOperation are not directly saved in db
         em.detach(updatedOperation);
         updatedOperation.date(UPDATED_DATE).description(UPDATED_DESCRIPTION).amount(UPDATED_AMOUNT);
+        OperationDTO operationDTO = operationMapper.toDto(updatedOperation);
 
         restOperationMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedOperation.getId())
+                put(ENTITY_API_URL_ID, operationDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedOperation))
+                    .content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isOk());
 
@@ -262,12 +272,15 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOperationMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, operation.getId())
+                put(ENTITY_API_URL_ID, operationDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(operation))
+                    .content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -282,12 +295,15 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOperationMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(operation))
+                    .content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -302,9 +318,12 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOperationMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operation)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(operationDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Operation in the database
@@ -324,7 +343,7 @@ class OperationResourceIT {
         Operation partialUpdatedOperation = new Operation();
         partialUpdatedOperation.setId(operation.getId());
 
-        partialUpdatedOperation.date(UPDATED_DATE);
+        partialUpdatedOperation.date(UPDATED_DATE).description(UPDATED_DESCRIPTION).amount(UPDATED_AMOUNT);
 
         restOperationMockMvc
             .perform(
@@ -339,8 +358,8 @@ class OperationResourceIT {
         assertThat(operationList).hasSize(databaseSizeBeforeUpdate);
         Operation testOperation = operationList.get(operationList.size() - 1);
         assertThat(testOperation.getDate()).isEqualTo(UPDATED_DATE);
-        assertThat(testOperation.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testOperation.getAmount()).isEqualByComparingTo(DEFAULT_AMOUNT);
+        assertThat(testOperation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testOperation.getAmount()).isEqualByComparingTo(UPDATED_AMOUNT);
     }
 
     @Test
@@ -380,12 +399,15 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOperationMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, operation.getId())
+                patch(ENTITY_API_URL_ID, operationDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(operation))
+                    .content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -400,12 +422,15 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOperationMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(operation))
+                    .content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -420,10 +445,13 @@ class OperationResourceIT {
         int databaseSizeBeforeUpdate = operationRepository.findAll().size();
         operation.setId(longCount.incrementAndGet());
 
+        // Create the Operation
+        OperationDTO operationDTO = operationMapper.toDto(operation);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restOperationMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(operation))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(operationDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

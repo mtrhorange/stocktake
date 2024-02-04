@@ -2,6 +2,8 @@ package io.github.jhipster.sample.web.rest;
 
 import io.github.jhipster.sample.domain.Label;
 import io.github.jhipster.sample.repository.LabelRepository;
+import io.github.jhipster.sample.service.dto.LabelDTO;
+import io.github.jhipster.sample.service.mapper.LabelMapper;
 import io.github.jhipster.sample.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -36,24 +38,29 @@ public class LabelResource {
 
     private final LabelRepository labelRepository;
 
-    public LabelResource(LabelRepository labelRepository) {
+    private final LabelMapper labelMapper;
+
+    public LabelResource(LabelRepository labelRepository, LabelMapper labelMapper) {
         this.labelRepository = labelRepository;
+        this.labelMapper = labelMapper;
     }
 
     /**
      * {@code POST  /labels} : Create a new label.
      *
-     * @param label the label to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new label, or with status {@code 400 (Bad Request)} if the label has already an ID.
+     * @param labelDTO the labelDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new labelDTO, or with status {@code 400 (Bad Request)} if the label has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Label> createLabel(@Valid @RequestBody Label label) throws URISyntaxException {
-        log.debug("REST request to save Label : {}", label);
-        if (label.getId() != null) {
+    public ResponseEntity<LabelDTO> createLabel(@Valid @RequestBody LabelDTO labelDTO) throws URISyntaxException {
+        log.debug("REST request to save Label : {}", labelDTO);
+        if (labelDTO.getId() != null) {
             throw new BadRequestAlertException("A new label cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Label result = labelRepository.save(label);
+        Label label = labelMapper.toEntity(labelDTO);
+        label = labelRepository.save(label);
+        LabelDTO result = labelMapper.toDto(label);
         return ResponseEntity
             .created(new URI("/api/labels/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -63,21 +70,23 @@ public class LabelResource {
     /**
      * {@code PUT  /labels/:id} : Updates an existing label.
      *
-     * @param id the id of the label to save.
-     * @param label the label to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated label,
-     * or with status {@code 400 (Bad Request)} if the label is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the label couldn't be updated.
+     * @param id the id of the labelDTO to save.
+     * @param labelDTO the labelDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated labelDTO,
+     * or with status {@code 400 (Bad Request)} if the labelDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the labelDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Label> updateLabel(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Label label)
-        throws URISyntaxException {
-        log.debug("REST request to update Label : {}, {}", id, label);
-        if (label.getId() == null) {
+    public ResponseEntity<LabelDTO> updateLabel(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody LabelDTO labelDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to update Label : {}, {}", id, labelDTO);
+        if (labelDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, label.getId())) {
+        if (!Objects.equals(id, labelDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -85,34 +94,36 @@ public class LabelResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Label result = labelRepository.save(label);
+        Label label = labelMapper.toEntity(labelDTO);
+        label = labelRepository.save(label);
+        LabelDTO result = labelMapper.toDto(label);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, label.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, labelDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /labels/:id} : Partial updates given fields of an existing label, field will ignore if it is null
      *
-     * @param id the id of the label to save.
-     * @param label the label to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated label,
-     * or with status {@code 400 (Bad Request)} if the label is not valid,
-     * or with status {@code 404 (Not Found)} if the label is not found,
-     * or with status {@code 500 (Internal Server Error)} if the label couldn't be updated.
+     * @param id the id of the labelDTO to save.
+     * @param labelDTO the labelDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated labelDTO,
+     * or with status {@code 400 (Bad Request)} if the labelDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the labelDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the labelDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Label> partialUpdateLabel(
+    public ResponseEntity<LabelDTO> partialUpdateLabel(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Label label
+        @NotNull @RequestBody LabelDTO labelDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Label partially : {}, {}", id, label);
-        if (label.getId() == null) {
+        log.debug("REST request to partial update Label partially : {}, {}", id, labelDTO);
+        if (labelDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, label.getId())) {
+        if (!Objects.equals(id, labelDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,20 +131,19 @@ public class LabelResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Label> result = labelRepository
-            .findById(label.getId())
+        Optional<LabelDTO> result = labelRepository
+            .findById(labelDTO.getId())
             .map(existingLabel -> {
-                if (label.getLabel() != null) {
-                    existingLabel.setLabel(label.getLabel());
-                }
+                labelMapper.partialUpdate(existingLabel, labelDTO);
 
                 return existingLabel;
             })
-            .map(labelRepository::save);
+            .map(labelRepository::save)
+            .map(labelMapper::toDto);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, label.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, labelDTO.getId().toString())
         );
     }
 
@@ -143,28 +153,29 @@ public class LabelResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of labels in body.
      */
     @GetMapping("")
-    public List<Label> getAllLabels() {
+    public List<LabelDTO> getAllLabels() {
         log.debug("REST request to get all Labels");
-        return labelRepository.findAll();
+        List<Label> labels = labelRepository.findAll();
+        return labelMapper.toDto(labels);
     }
 
     /**
      * {@code GET  /labels/:id} : get the "id" label.
      *
-     * @param id the id of the label to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the label, or with status {@code 404 (Not Found)}.
+     * @param id the id of the labelDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the labelDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Label> getLabel(@PathVariable("id") Long id) {
+    public ResponseEntity<LabelDTO> getLabel(@PathVariable("id") Long id) {
         log.debug("REST request to get Label : {}", id);
-        Optional<Label> label = labelRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(label);
+        Optional<LabelDTO> labelDTO = labelRepository.findById(id).map(labelMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(labelDTO);
     }
 
     /**
      * {@code DELETE  /labels/:id} : delete the "id" label.
      *
-     * @param id the id of the label to delete.
+     * @param id the id of the labelDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

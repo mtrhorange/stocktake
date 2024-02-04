@@ -2,6 +2,8 @@ package io.github.jhipster.sample.web.rest;
 
 import io.github.jhipster.sample.domain.BankAccount;
 import io.github.jhipster.sample.repository.BankAccountRepository;
+import io.github.jhipster.sample.service.dto.BankAccountDTO;
+import io.github.jhipster.sample.service.mapper.BankAccountMapper;
 import io.github.jhipster.sample.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -36,24 +38,29 @@ public class BankAccountResource {
 
     private final BankAccountRepository bankAccountRepository;
 
-    public BankAccountResource(BankAccountRepository bankAccountRepository) {
+    private final BankAccountMapper bankAccountMapper;
+
+    public BankAccountResource(BankAccountRepository bankAccountRepository, BankAccountMapper bankAccountMapper) {
         this.bankAccountRepository = bankAccountRepository;
+        this.bankAccountMapper = bankAccountMapper;
     }
 
     /**
      * {@code POST  /bank-accounts} : Create a new bankAccount.
      *
-     * @param bankAccount the bankAccount to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bankAccount, or with status {@code 400 (Bad Request)} if the bankAccount has already an ID.
+     * @param bankAccountDTO the bankAccountDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bankAccountDTO, or with status {@code 400 (Bad Request)} if the bankAccount has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<BankAccount> createBankAccount(@Valid @RequestBody BankAccount bankAccount) throws URISyntaxException {
-        log.debug("REST request to save BankAccount : {}", bankAccount);
-        if (bankAccount.getId() != null) {
+    public ResponseEntity<BankAccountDTO> createBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO) throws URISyntaxException {
+        log.debug("REST request to save BankAccount : {}", bankAccountDTO);
+        if (bankAccountDTO.getId() != null) {
             throw new BadRequestAlertException("A new bankAccount cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        BankAccount result = bankAccountRepository.save(bankAccount);
+        BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
+        bankAccount = bankAccountRepository.save(bankAccount);
+        BankAccountDTO result = bankAccountMapper.toDto(bankAccount);
         return ResponseEntity
             .created(new URI("/api/bank-accounts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -63,23 +70,23 @@ public class BankAccountResource {
     /**
      * {@code PUT  /bank-accounts/:id} : Updates an existing bankAccount.
      *
-     * @param id the id of the bankAccount to save.
-     * @param bankAccount the bankAccount to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bankAccount,
-     * or with status {@code 400 (Bad Request)} if the bankAccount is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the bankAccount couldn't be updated.
+     * @param id the id of the bankAccountDTO to save.
+     * @param bankAccountDTO the bankAccountDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bankAccountDTO,
+     * or with status {@code 400 (Bad Request)} if the bankAccountDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the bankAccountDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<BankAccount> updateBankAccount(
+    public ResponseEntity<BankAccountDTO> updateBankAccount(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody BankAccount bankAccount
+        @Valid @RequestBody BankAccountDTO bankAccountDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update BankAccount : {}, {}", id, bankAccount);
-        if (bankAccount.getId() == null) {
+        log.debug("REST request to update BankAccount : {}, {}", id, bankAccountDTO);
+        if (bankAccountDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, bankAccount.getId())) {
+        if (!Objects.equals(id, bankAccountDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -87,34 +94,36 @@ public class BankAccountResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        BankAccount result = bankAccountRepository.save(bankAccount);
+        BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
+        bankAccount = bankAccountRepository.save(bankAccount);
+        BankAccountDTO result = bankAccountMapper.toDto(bankAccount);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bankAccount.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bankAccountDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /bank-accounts/:id} : Partial updates given fields of an existing bankAccount, field will ignore if it is null
      *
-     * @param id the id of the bankAccount to save.
-     * @param bankAccount the bankAccount to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bankAccount,
-     * or with status {@code 400 (Bad Request)} if the bankAccount is not valid,
-     * or with status {@code 404 (Not Found)} if the bankAccount is not found,
-     * or with status {@code 500 (Internal Server Error)} if the bankAccount couldn't be updated.
+     * @param id the id of the bankAccountDTO to save.
+     * @param bankAccountDTO the bankAccountDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bankAccountDTO,
+     * or with status {@code 400 (Bad Request)} if the bankAccountDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the bankAccountDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the bankAccountDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<BankAccount> partialUpdateBankAccount(
+    public ResponseEntity<BankAccountDTO> partialUpdateBankAccount(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody BankAccount bankAccount
+        @NotNull @RequestBody BankAccountDTO bankAccountDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update BankAccount partially : {}, {}", id, bankAccount);
-        if (bankAccount.getId() == null) {
+        log.debug("REST request to partial update BankAccount partially : {}, {}", id, bankAccountDTO);
+        if (bankAccountDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, bankAccount.getId())) {
+        if (!Objects.equals(id, bankAccountDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -122,23 +131,19 @@ public class BankAccountResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<BankAccount> result = bankAccountRepository
-            .findById(bankAccount.getId())
+        Optional<BankAccountDTO> result = bankAccountRepository
+            .findById(bankAccountDTO.getId())
             .map(existingBankAccount -> {
-                if (bankAccount.getName() != null) {
-                    existingBankAccount.setName(bankAccount.getName());
-                }
-                if (bankAccount.getBalance() != null) {
-                    existingBankAccount.setBalance(bankAccount.getBalance());
-                }
+                bankAccountMapper.partialUpdate(existingBankAccount, bankAccountDTO);
 
                 return existingBankAccount;
             })
-            .map(bankAccountRepository::save);
+            .map(bankAccountRepository::save)
+            .map(bankAccountMapper::toDto);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bankAccount.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bankAccountDTO.getId().toString())
         );
     }
 
@@ -149,34 +154,31 @@ public class BankAccountResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bankAccounts in body.
      */
     @GetMapping("")
-    public List<BankAccount> getAllBankAccounts(
+    public List<BankAccountDTO> getAllBankAccounts(
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         log.debug("REST request to get all BankAccounts");
-        if (eagerload) {
-            return bankAccountRepository.findAllWithEagerRelationships();
-        } else {
-            return bankAccountRepository.findAll();
-        }
+        List<BankAccount> bankAccounts = bankAccountRepository.findAll();
+        return bankAccountMapper.toDto(bankAccounts);
     }
 
     /**
      * {@code GET  /bank-accounts/:id} : get the "id" bankAccount.
      *
-     * @param id the id of the bankAccount to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bankAccount, or with status {@code 404 (Not Found)}.
+     * @param id the id of the bankAccountDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bankAccountDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<BankAccount> getBankAccount(@PathVariable("id") Long id) {
+    public ResponseEntity<BankAccountDTO> getBankAccount(@PathVariable("id") Long id) {
         log.debug("REST request to get BankAccount : {}", id);
-        Optional<BankAccount> bankAccount = bankAccountRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(bankAccount);
+        Optional<BankAccountDTO> bankAccountDTO = bankAccountRepository.findOneWithEagerRelationships(id).map(bankAccountMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(bankAccountDTO);
     }
 
     /**
      * {@code DELETE  /bank-accounts/:id} : delete the "id" bankAccount.
      *
-     * @param id the id of the bankAccount to delete.
+     * @param id the id of the bankAccountDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

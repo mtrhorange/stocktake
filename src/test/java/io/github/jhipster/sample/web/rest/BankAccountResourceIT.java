@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.github.jhipster.sample.IntegrationTest;
 import io.github.jhipster.sample.domain.BankAccount;
 import io.github.jhipster.sample.repository.BankAccountRepository;
+import io.github.jhipster.sample.service.dto.BankAccountDTO;
+import io.github.jhipster.sample.service.mapper.BankAccountMapper;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,6 +60,9 @@ class BankAccountResourceIT {
     private BankAccountRepository bankAccountRepositoryMock;
 
     @Autowired
+    private BankAccountMapper bankAccountMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -97,8 +102,11 @@ class BankAccountResourceIT {
     void createBankAccount() throws Exception {
         int databaseSizeBeforeCreate = bankAccountRepository.findAll().size();
         // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
         restBankAccountMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccount)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
+            )
             .andExpect(status().isCreated());
 
         // Validate the BankAccount in the database
@@ -114,12 +122,15 @@ class BankAccountResourceIT {
     void createBankAccountWithExistingId() throws Exception {
         // Create the BankAccount with an existing ID
         bankAccount.setId(1L);
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
 
         int databaseSizeBeforeCreate = bankAccountRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restBankAccountMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccount)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
+            )
             .andExpect(status().isBadRequest());
 
         // Validate the BankAccount in the database
@@ -135,9 +146,12 @@ class BankAccountResourceIT {
         bankAccount.setName(null);
 
         // Create the BankAccount, which fails.
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
 
         restBankAccountMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccount)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
+            )
             .andExpect(status().isBadRequest());
 
         List<BankAccount> bankAccountList = bankAccountRepository.findAll();
@@ -152,9 +166,12 @@ class BankAccountResourceIT {
         bankAccount.setBalance(null);
 
         // Create the BankAccount, which fails.
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
 
         restBankAccountMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccount)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
+            )
             .andExpect(status().isBadRequest());
 
         List<BankAccount> bankAccountList = bankAccountRepository.findAll();
@@ -230,12 +247,13 @@ class BankAccountResourceIT {
         // Disconnect from session so that the updates on updatedBankAccount are not directly saved in db
         em.detach(updatedBankAccount);
         updatedBankAccount.name(UPDATED_NAME).balance(UPDATED_BALANCE);
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(updatedBankAccount);
 
         restBankAccountMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedBankAccount.getId())
+                put(ENTITY_API_URL_ID, bankAccountDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedBankAccount))
+                    .content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isOk());
 
@@ -253,12 +271,15 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, bankAccount.getId())
+                put(ENTITY_API_URL_ID, bankAccountDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(bankAccount))
+                    .content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -273,12 +294,15 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(bankAccount))
+                    .content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -293,9 +317,12 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccount)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(bankAccountDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the BankAccount in the database
@@ -315,6 +342,8 @@ class BankAccountResourceIT {
         BankAccount partialUpdatedBankAccount = new BankAccount();
         partialUpdatedBankAccount.setId(bankAccount.getId());
 
+        partialUpdatedBankAccount.name(UPDATED_NAME).balance(UPDATED_BALANCE);
+
         restBankAccountMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedBankAccount.getId())
@@ -327,8 +356,8 @@ class BankAccountResourceIT {
         List<BankAccount> bankAccountList = bankAccountRepository.findAll();
         assertThat(bankAccountList).hasSize(databaseSizeBeforeUpdate);
         BankAccount testBankAccount = bankAccountList.get(bankAccountList.size() - 1);
-        assertThat(testBankAccount.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testBankAccount.getBalance()).isEqualByComparingTo(DEFAULT_BALANCE);
+        assertThat(testBankAccount.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testBankAccount.getBalance()).isEqualByComparingTo(UPDATED_BALANCE);
     }
 
     @Test
@@ -367,12 +396,15 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, bankAccount.getId())
+                patch(ENTITY_API_URL_ID, bankAccountDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(bankAccount))
+                    .content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -387,12 +419,15 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(bankAccount))
+                    .content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -407,10 +442,13 @@ class BankAccountResourceIT {
         int databaseSizeBeforeUpdate = bankAccountRepository.findAll().size();
         bankAccount.setId(longCount.incrementAndGet());
 
+        // Create the BankAccount
+        BankAccountDTO bankAccountDTO = bankAccountMapper.toDto(bankAccount);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBankAccountMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(bankAccount))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(bankAccountDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.jhipster.sample</groupId>
-    <artifactId>jhipster-sample-application</artifactId>
+    <artifactId>jhipster-sample-application-react</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Jhipster Sample Application</name>
-    <description>Description for Jhipster Sample Application</description>
+    <name>Jhipster Sample Application React</name>
+    <description>Description for Jhipster Sample Application React</description>
 
     <properties>
         <!--
@@ -24,7 +24,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <start-class>io.github.jhipster.sample.JhipsterSampleApplicationApp</start-class>
+        <start-class>io.github.jhipster.sample.JhipsterSampleApplicationReactApp</start-class>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx1G</argLine>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         <run.addResources>false</run.addResources>
@@ -275,7 +275,7 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>mysql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -417,7 +417,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>jhipstersampleapplication:latest</image>
+                            <image>jhipstersampleapplicationreact:latest</image>
                         </to>
                         <container>
                             <entrypoint>
@@ -859,8 +859,8 @@
                 <profile.test>testdev</profile.test>
                 <liquibase-plugin.hibernate-dialect>org.hibernate.dialect.H2Dialect</liquibase-plugin.hibernate-dialect>
                 <liquibase-plugin.driver>org.h2.Driver</liquibase-plugin.driver>
-                <liquibase-plugin.url>jdbc:h2:tcp://localhost:18080/mem:jhipsterSampleApplication</liquibase-plugin.url>
-                <liquibase-plugin.username>jhipsterSampleApplication</liquibase-plugin.username>
+                <liquibase-plugin.url>jdbc:h2:tcp://localhost:18080/mem:jhipsterSampleApplicationReact</liquibase-plugin.url>
+                <liquibase-plugin.username>jhipsterSampleApplicationReact</liquibase-plugin.username>
                 <liquibase-plugin.password/>
             </properties>
             <dependencies>
@@ -881,7 +881,7 @@
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
                             <testExcludes>
-                                <testExclude>io/github/jhipster/sample/config/PostgreSqlTestContainer.java</testExclude>
+                                <testExclude>io/github/jhipster/sample/config/MysqlTestContainer.java</testExclude>
                             </testExcludes>
                         </configuration>
                     </plugin>
@@ -1009,10 +1009,10 @@
                 <!-- default Spring profiles -->
                 <spring.profiles.active>prod${profile.api-docs}${profile.tls}${profile.e2e}${profile.no-liquibase}</spring.profiles.active>
                 <profile.test>testprod</profile.test>
-                <liquibase-plugin.hibernate-dialect>org.hibernate.dialect.PostgreSQLDialect</liquibase-plugin.hibernate-dialect>
-                <liquibase-plugin.driver>org.postgresql.Driver</liquibase-plugin.driver>
-                <liquibase-plugin.url>jdbc:postgresql://localhost:5432/jhipsterSampleApplication</liquibase-plugin.url>
-                <liquibase-plugin.username>jhipsterSampleApplication</liquibase-plugin.username>
+                <liquibase-plugin.hibernate-dialect>org.hibernate.dialect.MySQL8Dialect</liquibase-plugin.hibernate-dialect>
+                <liquibase-plugin.driver>com.mysql.cj.jdbc.Driver</liquibase-plugin.driver>
+                <liquibase-plugin.url>jdbc:mysql://localhost:3306/jhipsterSampleApplicationReact</liquibase-plugin.url>
+                <liquibase-plugin.username>root</liquibase-plugin.username>
                 <liquibase-plugin.password/>
             </properties>
             <build>
@@ -1090,8 +1090,8 @@
             </build>
             <dependencies>
                 <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
+                    <groupId>com.mysql</groupId>
+                    <artifactId>mysql-connector-j</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -1152,7 +1152,7 @@
                                         <include>package-lock.json</include>
                                         <include>package.json</include>
                                         <include>tsconfig.json</include>
-                                        <include>tsconfig.app.json</include>
+                                        <include>.postcss.config.js</include>
                                         <include>webpack/*.*</include>
                                     </includes>
                                     <excludes>

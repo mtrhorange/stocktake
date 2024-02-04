@@ -15,7 +15,7 @@ describe('Label e2e test', () => {
   const labelPageUrlPattern = new RegExp('/label(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const labelSample = { label: 'accomplished along following' };
+  const labelSample = { label: 'result opposite' };
 
   let label;
 
@@ -133,7 +133,9 @@ describe('Label e2e test', () => {
       });
 
       it('last delete button click should delete instance of Label', () => {
+        cy.intercept('GET', '/api/labels/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
+        cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('label').should('exist');
         cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
@@ -157,8 +159,8 @@ describe('Label e2e test', () => {
     });
 
     it('should create an instance of Label', () => {
-      cy.get(`[data-cy="label"]`).type('soX');
-      cy.get(`[data-cy="label"]`).should('have.value', 'soX');
+      cy.get(`[data-cy="label"]`).type('spirited');
+      cy.get(`[data-cy="label"]`).should('have.value', 'spirited');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

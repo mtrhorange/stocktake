@@ -2,6 +2,8 @@ package io.github.jhipster.sample.web.rest;
 
 import io.github.jhipster.sample.domain.Operation;
 import io.github.jhipster.sample.repository.OperationRepository;
+import io.github.jhipster.sample.service.dto.OperationDTO;
+import io.github.jhipster.sample.service.mapper.OperationMapper;
 import io.github.jhipster.sample.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -41,24 +43,29 @@ public class OperationResource {
 
     private final OperationRepository operationRepository;
 
-    public OperationResource(OperationRepository operationRepository) {
+    private final OperationMapper operationMapper;
+
+    public OperationResource(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
+        this.operationMapper = operationMapper;
     }
 
     /**
      * {@code POST  /operations} : Create a new operation.
      *
-     * @param operation the operation to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new operation, or with status {@code 400 (Bad Request)} if the operation has already an ID.
+     * @param operationDTO the operationDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new operationDTO, or with status {@code 400 (Bad Request)} if the operation has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Operation> createOperation(@Valid @RequestBody Operation operation) throws URISyntaxException {
-        log.debug("REST request to save Operation : {}", operation);
-        if (operation.getId() != null) {
+    public ResponseEntity<OperationDTO> createOperation(@Valid @RequestBody OperationDTO operationDTO) throws URISyntaxException {
+        log.debug("REST request to save Operation : {}", operationDTO);
+        if (operationDTO.getId() != null) {
             throw new BadRequestAlertException("A new operation cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Operation result = operationRepository.save(operation);
+        Operation operation = operationMapper.toEntity(operationDTO);
+        operation = operationRepository.save(operation);
+        OperationDTO result = operationMapper.toDto(operation);
         return ResponseEntity
             .created(new URI("/api/operations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -68,23 +75,23 @@ public class OperationResource {
     /**
      * {@code PUT  /operations/:id} : Updates an existing operation.
      *
-     * @param id the id of the operation to save.
-     * @param operation the operation to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated operation,
-     * or with status {@code 400 (Bad Request)} if the operation is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the operation couldn't be updated.
+     * @param id the id of the operationDTO to save.
+     * @param operationDTO the operationDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated operationDTO,
+     * or with status {@code 400 (Bad Request)} if the operationDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the operationDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Operation> updateOperation(
+    public ResponseEntity<OperationDTO> updateOperation(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Operation operation
+        @Valid @RequestBody OperationDTO operationDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Operation : {}, {}", id, operation);
-        if (operation.getId() == null) {
+        log.debug("REST request to update Operation : {}, {}", id, operationDTO);
+        if (operationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, operation.getId())) {
+        if (!Objects.equals(id, operationDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -92,34 +99,36 @@ public class OperationResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Operation result = operationRepository.save(operation);
+        Operation operation = operationMapper.toEntity(operationDTO);
+        operation = operationRepository.save(operation);
+        OperationDTO result = operationMapper.toDto(operation);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, operation.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, operationDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /operations/:id} : Partial updates given fields of an existing operation, field will ignore if it is null
      *
-     * @param id the id of the operation to save.
-     * @param operation the operation to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated operation,
-     * or with status {@code 400 (Bad Request)} if the operation is not valid,
-     * or with status {@code 404 (Not Found)} if the operation is not found,
-     * or with status {@code 500 (Internal Server Error)} if the operation couldn't be updated.
+     * @param id the id of the operationDTO to save.
+     * @param operationDTO the operationDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated operationDTO,
+     * or with status {@code 400 (Bad Request)} if the operationDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the operationDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the operationDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Operation> partialUpdateOperation(
+    public ResponseEntity<OperationDTO> partialUpdateOperation(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Operation operation
+        @NotNull @RequestBody OperationDTO operationDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Operation partially : {}, {}", id, operation);
-        if (operation.getId() == null) {
+        log.debug("REST request to partial update Operation partially : {}, {}", id, operationDTO);
+        if (operationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, operation.getId())) {
+        if (!Objects.equals(id, operationDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -127,26 +136,19 @@ public class OperationResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Operation> result = operationRepository
-            .findById(operation.getId())
+        Optional<OperationDTO> result = operationRepository
+            .findById(operationDTO.getId())
             .map(existingOperation -> {
-                if (operation.getDate() != null) {
-                    existingOperation.setDate(operation.getDate());
-                }
-                if (operation.getDescription() != null) {
-                    existingOperation.setDescription(operation.getDescription());
-                }
-                if (operation.getAmount() != null) {
-                    existingOperation.setAmount(operation.getAmount());
-                }
+                operationMapper.partialUpdate(existingOperation, operationDTO);
 
                 return existingOperation;
             })
-            .map(operationRepository::save);
+            .map(operationRepository::save)
+            .map(operationMapper::toDto);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, operation.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, operationDTO.getId().toString())
         );
     }
 
@@ -158,16 +160,16 @@ public class OperationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of operations in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Operation>> getAllOperations(
+    public ResponseEntity<List<OperationDTO>> getAllOperations(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         log.debug("REST request to get a page of Operations");
-        Page<Operation> page;
+        Page<OperationDTO> page;
         if (eagerload) {
-            page = operationRepository.findAllWithEagerRelationships(pageable);
+            page = operationRepository.findAllWithEagerRelationships(pageable).map(operationMapper::toDto);
         } else {
-            page = operationRepository.findAll(pageable);
+            page = operationRepository.findAll(pageable).map(operationMapper::toDto);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -176,20 +178,20 @@ public class OperationResource {
     /**
      * {@code GET  /operations/:id} : get the "id" operation.
      *
-     * @param id the id of the operation to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the operation, or with status {@code 404 (Not Found)}.
+     * @param id the id of the operationDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the operationDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Operation> getOperation(@PathVariable("id") Long id) {
+    public ResponseEntity<OperationDTO> getOperation(@PathVariable("id") Long id) {
         log.debug("REST request to get Operation : {}", id);
-        Optional<Operation> operation = operationRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(operation);
+        Optional<OperationDTO> operationDTO = operationRepository.findOneWithEagerRelationships(id).map(operationMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(operationDTO);
     }
 
     /**
      * {@code DELETE  /operations/:id} : delete the "id" operation.
      *
-     * @param id the id of the operation to delete.
+     * @param id the id of the operationDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

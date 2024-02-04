@@ -90,7 +90,7 @@ management:
 
 spring:
   application:
-    name: jhipsterSampleApplication
+    name: jhipsterSampleApplicationReact
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
@@ -139,13 +139,13 @@ spring:
       enabled: true
   task:
     execution:
-      thread-name-prefix: jhipster-sample-application-task-
+      thread-name-prefix: jhipster-sample-application-react-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: jhipster-sample-application-scheduling-
+      thread-name-prefix: jhipster-sample-application-react-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -176,7 +176,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'jhipsterSampleApplicationApp'
+    name: 'jhipsterSampleApplicationReactApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -186,12 +186,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: jhipsterSampleApplication@localhost
+    from: jhipsterSampleApplicationReact@localhost
   api-docs:
     default-include-pattern: /api/**
     management-include-pattern: /management/**
-    title: Jhipster Sample Application API
-    description: Jhipster Sample Application API documentation
+    title: Jhipster Sample Application React API
+    description: Jhipster Sample Application React API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:
