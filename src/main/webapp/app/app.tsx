@@ -16,6 +16,8 @@ import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import ErrorBoundary from 'app/shared/error/error-boundary';
 import { AUTHORITIES } from 'app/config/constants';
 import AppRoutes from 'app/routes';
+import SideNav from './shared/layout/menus/side-nav';
+import { Grid } from '@mui/material';
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '');
 
@@ -38,8 +40,8 @@ export const App = () => {
   return (
     <BrowserRouter basename={baseHref}>
       <div className="app-container" style={{ paddingTop }}>
-        <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" />
-        <ErrorBoundary>
+        {/* <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" /> */}
+        {/* <ErrorBoundary>
           <Header
             isAuthenticated={isAuthenticated}
             isAdmin={isAdmin}
@@ -48,13 +50,22 @@ export const App = () => {
             isInProduction={isInProduction}
             isOpenAPIEnabled={isOpenAPIEnabled}
           />
-        </ErrorBoundary>
+        </ErrorBoundary> */}
         <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card">
+          {/* <Card className="jh-card">
             <ErrorBoundary>
-              <AppRoutes />
+            <AppRoutes />
             </ErrorBoundary>
-          </Card>
+          </Card> */}
+          <Grid container>
+            <Grid item xs={2}>
+              <SideNav />
+            </Grid>
+            <Grid item xs={10}>
+              <AppRoutes />
+            </Grid>
+          </Grid>
+
           <Footer />
         </div>
       </div>
