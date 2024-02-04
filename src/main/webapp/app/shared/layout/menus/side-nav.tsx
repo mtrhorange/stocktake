@@ -14,6 +14,25 @@ import ListItemText from '@mui/material/ListItemText';
 
 const drawerWidth = 240;
 
+const routes = [
+  {
+    text: 'Dashboard',
+    url: '/',
+  },
+  {
+    text: 'Inventory',
+    url: '/inventory',
+  },
+  {
+    text: 'Products',
+    url: '/products',
+  },
+  {
+    text: 'Categories',
+    url: '/categories',
+  },
+];
+
 export const SideNav = () => {
   return (
     <>
@@ -41,21 +60,13 @@ export const SideNav = () => {
           <Toolbar />
           <Divider />
           <List>
-            <ListItem key={'Dashboard'} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={'Dashboard'} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key={'Inventory'} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={'Inventory'} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem key={'Account'} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={'Account'} />
-              </ListItemButton>
-            </ListItem>
+            {routes.map((item, index) => (
+              <ListItem key={item.text} disablePadding>
+                <ListItemButton href={item.url}>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
           {/* <Divider />
           <List>

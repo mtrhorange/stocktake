@@ -3,18 +3,21 @@ import React from 'react';
 
 const drawerWidth = 240;
 
-export const Dashboard = () => {
+export const Inventory = () => {
   return (
     <>
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
         {/* <Toolbar /> */}
         <AppBar position="fixed" sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}>
           <Toolbar>
-            <Typography variant="h6" noWrap component="div">
+            {/* <Typography variant="h6" noWrap component="div">
               Dashboard
-            </Typography>
+            </Typography> */}
           </Toolbar>
         </AppBar>
+        <Typography variant="h4" noWrap component="div">
+          Inventory
+        </Typography>
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           Rhoncus dolor purus non enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in
@@ -37,4 +40,4 @@ export const Dashboard = () => {
     </>
   );
 };
-export default Dashboard;
+export default Inventory;
