@@ -14,7 +14,7 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
-import { Dashboard, Inventory, Products, Categories } from './modules/pages';
+import { Dashboard, Inventory, Product, Products, Categories } from './modules/pages';
 
 const loading = <div>loading ...</div>;
 
@@ -33,6 +33,7 @@ const AppRoutes = () => {
       <ErrorBoundaryRoutes>
         <Route index element={<Dashboard />} />
         <Route path="inventory" element={<Inventory />} />
+        <Route path="product" element={<Product />} />
         <Route path="products" element={<Products />} />
         <Route path="categories" element={<Categories />} />
         <Route path="login" element={<Login />} />
