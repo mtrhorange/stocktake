@@ -20,17 +20,12 @@ phases:
     build:
         commands:
             - ./mvnw test
-    #post_build:
-        #commands:
-            #- command
-            #- command
-# artifacts:
-#     artifacts:
-#         files:
-#             - '**/*'
-#         base-directory: base_dir
-#         name: build-artifact-name
-#         discard-paths: no
+    post_build:
+        commands:
+            - printf '[{"name":"your.task.definition.container.name","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+    files: imagedefinitions.json
 cache:
     paths:
         - .maven/
