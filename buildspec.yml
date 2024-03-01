@@ -33,7 +33,8 @@ artifacts:
         - /*.war
         #name: $(date +%Y-%m-%d)
         #discard-paths: yes
-        base-directory: target/
+        base-directory: 
+            - target/
 cache:
     paths:
         - .maven/
