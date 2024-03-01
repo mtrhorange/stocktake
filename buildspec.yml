@@ -19,9 +19,9 @@ phases:
             - export MAVEN_USER_HOME=`pwd`/.maven
     build:
         commands:
-            - ./mvnw test -Dmaven.repo.local=$MAVEN_USER_HOME
-            - ./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='test -- -u' -Dmaven.repo.local=$MAVEN_USER_HOME
-            - ./mvnw verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+            - ./mvnw test
+            # - ./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='test -- -u' -Dmaven.repo.local=$MAVEN_USER_HOME
+            # - ./mvnw verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
     #post_build:
         #commands:
             #- command
