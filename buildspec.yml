@@ -20,12 +20,18 @@ phases:
     build:
         commands:
             - ./mvnw test
-            # - ./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='test -- -u' -Dmaven.repo.local=$MAVEN_USER_HOME
-            # - ./mvnw verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
     #post_build:
         #commands:
             #- command
             #- command
+artifacts:
+    files:
+        - test-results/jest/TESTS-*.xml
+        - test-results/TESTS-*.xml
+        - /*.war
+        #name: $(date +%Y-%m-%d)
+        #discard-paths: yes
+        base-directory: target/
 cache:
     paths:
         - .maven/
