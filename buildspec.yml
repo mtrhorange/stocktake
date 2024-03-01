@@ -26,15 +26,6 @@ phases:
         #commands:
             #- command
             #- command
-artifacts:
-    files:
-        - test-results/jest/TESTS-*.xml
-        - test-results/TESTS-*.xml
-        - /*.war
-        #name: $(date +%Y-%m-%d)
-        #discard-paths: yes
-        base-directory: 
-            - target/
 cache:
     paths:
         - .maven/
