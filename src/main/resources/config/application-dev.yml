@@ -32,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:mem:jhipsterSampleApplicationReact;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
-    username: jhipsterSampleApplicationReact
-    password:
+    url: jdbc:mysql://database.cfak0qkq6pvl.ap-southeast-1.rds.amazonaws.com/stocktake
+    username: admin
+    password: password
     hikari:
       poolName: Hikari
       auto-commit: false
