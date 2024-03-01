@@ -19,6 +19,7 @@ phases:
             - export MAVEN_USER_HOME=`pwd`/.maven
     build:
         commands:
+            - sudo apt install -y openjdk-18-jdk
             - ./mvnw test
             # - ./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='test -- -u' -Dmaven.repo.local=$MAVEN_USER_HOME
             # - ./mvnw verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
