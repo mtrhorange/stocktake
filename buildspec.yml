@@ -24,11 +24,13 @@ phases:
         #commands:
             #- command
             #- command
-artifacts:
-    files:
-        - test-results/jest/TESTS-*.xml
-        - test-results/TESTS-*.xml
-        - /*.war
+# artifacts:
+#     artifacts:
+#         files:
+#             - '**/*'
+#         base-directory: base_dir
+#         name: build-artifact-name
+#         discard-paths: no
 cache:
     paths:
         - .maven/
