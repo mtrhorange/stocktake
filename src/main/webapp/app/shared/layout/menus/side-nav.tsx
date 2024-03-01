@@ -24,10 +24,6 @@ const routes = [
     url: '/inventory',
   },
   {
-    text: 'Products',
-    url: '/products',
-  },
-  {
     text: 'Categories',
     url: '/categories',
   },
