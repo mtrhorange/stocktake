@@ -315,7 +315,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public List<String> getAuthorities() {
-        return authorityRepository.findAll().stream().map(Authority::getName).toList();
+        return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
     private void clearUserCaches(User user) {
