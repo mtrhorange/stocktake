@@ -15,10 +15,9 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 const drawerWidth = 240;
 
-export const Product = () => {
+export const Category = () => {
   return (
     <>
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
@@ -40,7 +39,7 @@ export const Product = () => {
           </Grid>
           <Grid item>
             <Typography variant="h4" style={{ marginBottom: '10px' }}>
-              Product
+              Category
             </Typography>
           </Grid>
         </Grid>
@@ -54,19 +53,6 @@ export const Product = () => {
               <TextField label={'Description'} multiline rows={4} />
             </Grid>
             <Grid xs={12} sx={{ marginBottom: '20px' }}>
-              <TextField label={'Price'} />
-            </Grid>
-            <Grid xs={12} sx={{ marginBottom: '20px' }}>
-              <FormControl style={{ width: '20%' }}>
-                <InputLabel>Category</InputLabel>
-                <Select label="Category" defaultValue={'default'}>
-                  <MenuItem value="default">Default</MenuItem>
-                  <MenuItem value="food">Food</MenuItem>
-                  <MenuItem value="drinks">Drinks</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid xs={12} sx={{ marginBottom: '20px' }}>
               <Button variant="contained">Submit</Button>
             </Grid>
           </Grid>
@@ -75,4 +61,4 @@ export const Product = () => {
     </>
   );
 };
-export default Product;
+export default Category;

@@ -32,6 +32,7 @@ public class ProductService {
         try {
             if (!productRepository.existsByName(productRequest.getName())) {
                 Product newProduct = productFactory.createProduct(productRequest);
+
                 return productRepository.save(newProduct);
             } else {
                 throw new DataIntegrityViolationException("Product already exists");

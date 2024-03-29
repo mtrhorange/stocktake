@@ -2,6 +2,7 @@ package io.github.jhipster.sample.domain;
 
 import jakarta.persistence.*;
 
+@Data
 @Entity
 @Table(name = "product")
 public class Product {

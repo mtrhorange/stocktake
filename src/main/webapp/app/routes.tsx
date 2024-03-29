@@ -14,7 +14,8 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
-import { Dashboard, Inventory, Product, Products, Categories } from './modules/pages';
+import { Dashboard, Inventory, Product, Products, Categories, Category } from './modules/pages';
+import { CategoryOutlined } from '@mui/icons-material';
 
 const loading = <div>loading ...</div>;
 
@@ -36,6 +37,7 @@ const AppRoutes = () => {
         <Route path="product" element={<Product />} />
         <Route path="products" element={<Products />} />
         <Route path="categories" element={<Categories />} />
+        <Route path="category" element={<Category />} />
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />
         <Route path="account">
