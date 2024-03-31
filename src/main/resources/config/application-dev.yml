@@ -42,6 +42,10 @@ spring:
     console:
       # disable spring boot built-in h2-console since we start it manually with correct configuration
       enabled: false
+  jpa:
+    hibernate.ddl-auto: update
+    properties:
+      hibernate.default_schema: stocktake
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     #contexts: dev, faker

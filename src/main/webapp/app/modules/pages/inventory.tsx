@@ -19,6 +19,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Edit, Delete } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 interface Data {
   id: number;
@@ -36,14 +38,14 @@ function createData(id: number, name: string, price: string, stock: number): Dat
   };
 }
 
-const rows = [
-  createData(1, 'Cupcake', '3', 17),
-  createData(2, 'Ice Cream Cake', '6', 3),
-  createData(3, 'Donut', '4', 5),
-  createData(4, 'Choc Chip Cookie', '3', 8),
-  createData(5, 'Matcha Cookie', '3', 9),
-  createData(6, 'Plain Cookie', '2', 13),
-];
+// const rows = [
+//   createData(1, 'Cupcake', '3', 17),
+//   createData(2, 'Ice Cream Cake', '6', 3),
+//   createData(3, 'Donut', '4', 5),
+//   createData(4, 'Choc Chip Cookie', '3', 8),
+//   createData(5, 'Matcha Cookie', '3', 9),
+//   createData(6, 'Plain Cookie', '2', 13),
+// ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -254,7 +256,28 @@ export const Inventory = () => {
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('/api/products/getAllProducts');
+
+        const data = res.data;
+        console.log('Data: ', data);
+        let dataRows = [];
+        for (let i = 0; i < data.length; i++) {
+          const obj = data[i];
+          dataRows.push(createData(i + 1, obj.name, obj.price, obj.quantity));
+        }
+        setRows(dataRows);
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -303,7 +326,7 @@ export const Inventory = () => {
 
   const visibleRows = React.useMemo(
     () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, rows],
   );
 
   return (

@@ -29,7 +29,7 @@ public class ProductResource {
         return productService.findProductsByName(productName);
     }
 
-    @PostMapping
+    @PostMapping("/createProduct")
     public Product createProduct(@Valid @RequestBody productRequest prodRequest) throws SQLIntegrityConstraintViolationException {
         return productService.addProduct(prodRequest);
     }
