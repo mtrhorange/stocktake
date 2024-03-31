@@ -7,7 +7,6 @@ import java.util.Objects;
 /**
  * A DTO for the {@link io.github.jhipster.sample.domain.Product} entity.
  */
-@Data
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ProductDTO implements Serializable {
 
