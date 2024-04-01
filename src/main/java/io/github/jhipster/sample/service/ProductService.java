@@ -43,13 +43,23 @@ public class ProductService {
     }
 
     // Method to delete a product by ID
-    public String deleteProduct(String productName) {
-        long productDeleted = productRepository.deleteByName(productName);
+    public String deleteProduct(Long id) {
+        long productDeleted = productRepository.deleteByProductId(id);
         if (productDeleted == 0) {
-            throw new NotFoundException("Product name not found");
+            throw new NotFoundException("Product id not found");
         } else {
-            return "Product: " + productName + " deleted";
+            return "Product: " + id + " deleted";
         }
+    }
+
+    public String deleteProducts(Long[] id) {
+        productRepository.deleteByProductIdIn(id);
+        //        if (productDeleted == 0) {
+        //            throw new NotFoundException("Product id not found");
+        //        } else {
+        //            return "Products deleted: " + id;
+        //        }
+        return "Products deleted: " + id.toString();
     }
 
     // Method to update a product

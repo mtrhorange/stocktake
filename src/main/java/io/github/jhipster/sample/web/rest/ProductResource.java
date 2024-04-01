@@ -34,9 +34,14 @@ public class ProductResource {
         return productService.addProduct(prodRequest);
     }
 
-    @DeleteMapping("/deleteProduct/{productName}")
-    public String deleteProduct(@PathVariable(value = "productName") String productName) {
-        return productService.deleteProduct(productName);
+    @DeleteMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable(value = "id") Long id) {
+        return productService.deleteProduct(id);
+    }
+
+    @PostMapping("/deleteProducts")
+    public String deleteProduct(@Valid @RequestBody Long[] id) {
+        return productService.deleteProducts(id);
     }
 
     @PutMapping("/updateProduct/{productId}")

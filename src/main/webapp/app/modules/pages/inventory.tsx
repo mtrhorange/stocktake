@@ -21,6 +21,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface Data {
   id: number;
@@ -169,56 +170,6 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: theme => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Inventory
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <>
-          <Tooltip title="Edit">
-            <IconButton>
-              <Edit />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton>
-              <Delete />
-            </IconButton>
-          </Tooltip>
-        </>
-      ) : (
-        <>
-          <Button variant="contained" sx={{ marginRight: '10px' }} href="/product">
-            Add
-          </Button>
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      )}
-    </Toolbar>
-  );
-}
 const drawerWidth = 240;
 const columns: GridColDef[] = [
   {
@@ -259,23 +210,24 @@ export const Inventory = () => {
   const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('/api/products/getAllProducts');
+  const fetchData = async () => {
+    try {
+      const res = await axios.get('/api/products/getAllProducts');
 
-        const data = res.data;
-        console.log('Data: ', data);
-        let dataRows = [];
-        for (let i = 0; i < data.length; i++) {
-          const obj = data[i];
-          dataRows.push(createData(i + 1, obj.name, obj.price, obj.quantity));
-        }
-        setRows(dataRows);
-      } catch (error) {
-        console.error('Error fetching data', error);
+      const data = res.data;
+      console.log('Data: ', data);
+      let dataRows = [];
+      for (let i = 0; i < data.length; i++) {
+        const obj = data[i];
+        dataRows.push(createData(obj.productID, obj.name, obj.price, obj.quantity));
       }
-    };
+      setRows(dataRows);
+    } catch (error) {
+      console.error('Error fetching data', error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -321,6 +273,27 @@ export const Inventory = () => {
 
   const isSelected = (id: string | number) => selected.indexOf(Number(id)) !== -1;
 
+  const onDelete = () => {
+    const deleteProduct = async () => {
+      try {
+        const res = await axios.post(`/api/products/deleteProducts`, selected, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        fetchData();
+        toast.success('Product deleted');
+        setSelected([]);
+      } catch (error) {
+        toast.error('Delete unsuccessful');
+        console.error('Error deleting product', error);
+      }
+    };
+
+    deleteProduct();
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -328,6 +301,59 @@ export const Inventory = () => {
     () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, rows],
   );
+
+  function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+    const { numSelected } = props;
+
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: theme => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+            Inventory
+          </Typography>
+        )}
+        {numSelected > 0 ? (
+          <>
+            {numSelected == 1 && (
+              <Tooltip title="Edit">
+                <IconButton>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Delete">
+              <IconButton onClick={onDelete}>
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : (
+          <>
+            <Button variant="contained" sx={{ marginRight: '10px' }} href="/product">
+              Add
+            </Button>
+            <Tooltip title="Filter list">
+              <IconButton>
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+      </Toolbar>
+    );
+  }
 
   return (
     <>
