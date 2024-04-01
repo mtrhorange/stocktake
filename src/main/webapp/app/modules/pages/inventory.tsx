@@ -22,20 +22,23 @@ import { visuallyHidden } from '@mui/utils';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 interface Data {
   id: number;
   name: string;
   price: string;
   stock: number;
+  desc: string;
 }
 
-function createData(id: number, name: string, price: string, stock: number): Data {
+function createData(id: number, name: string, price: string, stock: number, desc: string): Data {
   return {
     id,
     name,
     price,
     stock,
+    desc,
   };
 }
 
@@ -108,6 +111,12 @@ const headCells: readonly HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: 'Stock',
+  },
+  {
+    id: 'desc',
+    numeric: false,
+    disablePadding: true,
+    label: 'Description',
   },
 ];
 
@@ -187,6 +196,7 @@ const columns: GridColDef[] = [
   {
     field: 'stock',
     headerName: 'Stock',
+    width: 10,
     renderCell: (params: GridRenderCellParams) => (
       <>
         <TextField
@@ -199,6 +209,7 @@ const columns: GridColDef[] = [
       </>
     ),
   },
+  { field: 'desc', headerName: 'Description', width: 130 },
 ];
 
 export const Inventory = () => {
@@ -209,6 +220,7 @@ export const Inventory = () => {
   const [dense, setDense] = React.useState(false);
   const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -219,7 +231,7 @@ export const Inventory = () => {
       let dataRows = [];
       for (let i = 0; i < data.length; i++) {
         const obj = data[i];
-        dataRows.push(createData(obj.productID, obj.name, obj.price, obj.quantity));
+        dataRows.push(createData(obj.productID, obj.name, obj.price, obj.quantity, obj.description));
       }
       setRows(dataRows);
     } catch (error) {
@@ -294,6 +306,12 @@ export const Inventory = () => {
     deleteProduct();
   };
 
+  const onEdit = () => {
+    navigate('/product', {
+      state: { data: selected[0] },
+    });
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -327,7 +345,7 @@ export const Inventory = () => {
         {numSelected > 0 ? (
           <>
             {numSelected == 1 && (
-              <Tooltip title="Edit">
+              <Tooltip title="Edit" onClick={onEdit}>
                 <IconButton>
                   <Edit />
                 </IconButton>
@@ -417,6 +435,7 @@ export const Inventory = () => {
                             }}
                           />
                         </TableCell>
+                        <TableCell>{row.desc}</TableCell>
                       </TableRow>
                     );
                   })}

@@ -13,16 +13,17 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 const drawerWidth = 240;
 
 export const Product = () => {
+  const location = useLocation();
   const methods = useForm<any>({
     mode: 'onBlur',
     shouldFocusError: false,
@@ -30,8 +31,30 @@ export const Product = () => {
 
   const { control, getValues, setValue } = methods;
   const navigate = useNavigate();
+  const id = location.state?.data || null;
 
-  const submitForm = async () => {
+  useEffect(() => {
+    if (id != null) {
+      fetchData(id);
+    }
+  }, []);
+
+  const fetchData = async id => {
+    try {
+      const res = await axios.get(`/api/products/getProduct/${id}`);
+
+      const data = res.data;
+      methods.reset({
+        name: data.name,
+        description: data.description,
+        price: data.price,
+      });
+    } catch (error) {
+      console.error('Error fetching: ', error);
+    }
+  };
+
+  const createProduct = async () => {
     try {
       const res = await axios.post('/api/products/createProduct', JSON.stringify(getValues()), {
         headers: {
@@ -43,15 +66,31 @@ export const Product = () => {
       navigate('/inventory');
     } catch (error) {
       toast.error('Product create unsuccessfully');
-      console.error('Error submitting form', error);
+      console.error('Error submitting create ', error);
+    }
+  };
+
+  const updateProduct = async () => {
+    try {
+      const res = await axios.put(`/api/products/updateProduct/${id}`, JSON.stringify(getValues()), {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      toast.success('Product successfully updated');
+
+      navigate('/inventory');
+    } catch (error) {
+      toast.error('Product updated unsuccessfully');
+      console.error('Error submitting update ', error);
     }
   };
 
   const onSubmit = () => {
     setValue('quantity', 0);
     console.log('Submit: ', getValues());
-
-    submitForm();
+    if (id == null) createProduct();
+    else updateProduct();
   };
 
   return (

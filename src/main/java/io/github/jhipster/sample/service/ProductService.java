@@ -97,6 +97,14 @@ public class ProductService {
         return product;
     }
 
+    public Product findProduct(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            throw new NotFoundException("Product not found");
+        }
+        return product.get();
+    }
+
     // Method to find product names containing the input parameter
     public List<String> findProductNamesContaining(String keyword) {
         List<Product> productsContainingKeyword = productRepository.findByNameContaining(keyword);

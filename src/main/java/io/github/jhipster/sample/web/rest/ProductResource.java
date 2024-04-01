@@ -29,6 +29,11 @@ public class ProductResource {
         return productService.findProductsByName(productName);
     }
 
+    @GetMapping("/getProduct/{productId}")
+    public Product findProduct(@PathVariable(value = "productId") Long productId) {
+        return productService.findProduct(productId);
+    }
+
     @PostMapping("/createProduct")
     public Product createProduct(@Valid @RequestBody productRequest prodRequest) throws SQLIntegrityConstraintViolationException {
         return productService.addProduct(prodRequest);
