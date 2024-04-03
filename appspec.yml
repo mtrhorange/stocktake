@@ -2,9 +2,12 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /build
+    destination: /stocktake
 hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
   ApplicationStart:
     - location: scripts/app_start.sh
       timeout: 300
-      runas: root
