@@ -1,6 +1,8 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import React from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -10,7 +12,32 @@ type TableStyles = {
   evenRow: React.CSSProperties;
 };
 
+// Define the Product interface
+interface Product {
+  id: number;
+  name: string;
+  quantity: number;
+  // Add more properties as needed
+}
+
 export const Dashboard = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // Define a function to fetch all products
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('/api/products'); // Replace '/api/products' with your actual API endpoint
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    // Call the fetchProducts function
+    fetchProducts();
+  }, []); // Empty dependency array ensures the effect runs only once
+
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     justifyContent: 'center',
@@ -93,6 +120,20 @@ export const Dashboard = () => {
             ))}
           </tbody>
         </table>
+        <br></br>
+        <div>
+          <Typography variant="h4" noWrap component="div">
+            Product Dashboard
+          </Typography>
+          {/* Render your product data here */}
+          <ul>
+            {products.map(product => (
+              <li key={product.id}>
+                {product.name}, {product.quantity}
+              </li>
+            ))}
+          </ul>
+        </div>
       </Box>
     </>
   );
