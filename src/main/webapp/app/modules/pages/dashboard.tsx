@@ -1,9 +1,47 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import { PieChart } from '@mui/x-charts/PieChart';
 import React from 'react';
 
 const drawerWidth = 240;
 
+type TableStyles = {
+  th: React.CSSProperties;
+  td: React.CSSProperties;
+  evenRow: React.CSSProperties;
+};
+
 export const Dashboard = () => {
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '50vh', // Adjust the height as needed
+  };
+
+  const tableData = [
+    { id: 1, name: 'Product A', quantity: 30 },
+    { id: 2, name: 'Product B', quantity: 25 },
+    { id: 3, name: 'Product C', quantity: 35 },
+    // Add more data as needed
+  ];
+
+  const tstyles: TableStyles = {
+    th: {
+      border: '1px solid black',
+      textAlign: 'left',
+      padding: '8px',
+    },
+    td: {
+      border: '1px solid black',
+      textAlign: 'left',
+      padding: '8px',
+    },
+    // Define a separate CSS class for even rows
+    evenRow: {
+      backgroundColor: '#f2f2f2',
+    },
+  };
+
   return (
     <>
       <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
@@ -18,24 +56,43 @@ export const Dashboard = () => {
         <Typography variant="h4" noWrap component="div">
           Dashboard
         </Typography>
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          Rhoncus dolor purus non enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in
-          hendrerit gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id donec ultrices. Odio morbi
-          quis commodo odio aenean sed adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies integer quis. Cursus euismod quis
-          viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis imperdiet massa
-          tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget arcu dictum varius duis at consectetur lorem. Velit sed
-          ullamcorper morbi tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-          consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt ornare
-          massa eget egestas purus viverra accumsan in. In hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam
-          sem et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean euismod
-          elementum nisi quis eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices
-          sagittis orci a.
-        </Typography>
+        <div style={containerStyle}>
+          <PieChart
+            series={[
+              {
+                data: [
+                  { id: 0, value: 10, label: 'Product A' },
+                  { id: 1, value: 15, label: 'Product B' },
+                  { id: 2, value: 20, label: 'Product C' },
+                ],
+              },
+            ]}
+            width={400}
+            height={200}
+          />
+        </div>
+
+        {/* Table for item details */}
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+          <thead>
+            <tr>
+              <th style={tstyles.th}>ID</th>
+              <th style={tstyles.th}>Product Name</th>
+              {/* Add more headers/columns as needed */}
+              <th style={tstyles.th}>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableData.map((row, index) => (
+              <tr key={row.id} style={index % 2 === 0 ? tstyles.evenRow : {}}>
+                <td style={tstyles.td}>{row.id}</td>
+                <td style={tstyles.td}>{row.name}</td>
+                {/* Render more columns here */}
+                <td style={tstyles.td}>{row.quantity}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </Box>
     </>
   );
