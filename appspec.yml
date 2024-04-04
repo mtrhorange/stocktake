@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /home/ec2-user/stocktake
+  - source: /
     destination: /home/ec2-user/stocktake
 permissions:
   - object: /
@@ -14,6 +14,6 @@ hooks:
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: scripts/app_start.sh
+    - location: app_start.sh
       timeout: 300
       runas: root
