@@ -1,2 +1,2 @@
 #! /bin/bash
-npm install
+yum install nodejs npm --enablerepo=epel
