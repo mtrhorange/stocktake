@@ -1,2 +1,2 @@
 #! /bin/bash
-yum install nodejs npm
+yum -y install nodejs npm
