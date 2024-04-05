@@ -8,11 +8,17 @@ import org.springframework.stereotype.Component;
 public class ConcreteProductFactory implements ProductFactory {
 
     public Product createProduct(productRequest prodRequest) {
-        Product product = new Product();
-        product.setName(prodRequest.getName());
-        product.setDescription(prodRequest.getDescription());
-        product.setQuantity(prodRequest.getQuantity());
-        product.setPrice(prodRequest.getPrice());
+        Product product = new Product(
+            prodRequest.getName(),
+            prodRequest.getDescription(),
+            prodRequest.getQuantity(),
+            prodRequest.getPrice()
+        );
+
+        // product.setName(prodRequest.getName());
+        // product.setDescription(prodRequest.getDescription());
+        // product.setQuantity(prodRequest.getQuantity());
+        // product.setPrice(prodRequest.getPrice());
 
         return product;
     }
