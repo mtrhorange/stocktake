@@ -35,11 +35,11 @@ export const Product = () => {
 
   useEffect(() => {
     if (id != null) {
-      fetchData(id);
+      fetchData();
     }
   }, []);
 
-  const fetchData = async id => {
+  const fetchData = async () => {
     try {
       const res = await axios.get(`/api/products/getProduct/${id}`);
 
@@ -88,7 +88,6 @@ export const Product = () => {
 
   const onSubmit = () => {
     setValue('quantity', 0);
-    console.log('Submit: ', getValues());
     if (id == null) createProduct();
     else updateProduct();
   };

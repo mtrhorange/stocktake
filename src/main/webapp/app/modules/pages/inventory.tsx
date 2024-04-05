@@ -227,8 +227,7 @@ export const Inventory = () => {
       const res = await axios.get('/api/products/getAllProducts');
 
       const data = res.data;
-      console.log('Data: ', data);
-      let dataRows = [];
+      const dataRows = [];
       for (let i = 0; i < data.length; i++) {
         const obj = data[i];
         dataRows.push(createData(obj.productID, obj.name, obj.price, obj.quantity, obj.description));
@@ -344,7 +343,7 @@ export const Inventory = () => {
         )}
         {numSelected > 0 ? (
           <>
-            {numSelected == 1 && (
+            {numSelected === 1 && (
               <Tooltip title="Edit" onClick={onEdit}>
                 <IconButton>
                   <Edit />

@@ -1,7 +1,7 @@
 package io.github.jhipster.sample.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.jhipster.sample.domain.Product;
-import io.github.jhipster.sample.factory.ProductFactory;
 import io.github.jhipster.sample.repository.ProductRepository;
 import io.github.jhipster.sample.request.productRequest;
 import jakarta.transaction.Transactional;
@@ -24,15 +24,13 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private ProductFactory productFactory;
-
     // Method to add a product
     public Product addProduct(productRequest productRequest) throws SQLIntegrityConstraintViolationException {
         try {
             if (!productRepository.existsByName(productRequest.getName())) {
-                Product newProduct = productFactory.createProduct(productRequest);
-
+                ObjectMapper objectMapper = new ObjectMapper();
+                //Product newProduct = productFactory.createProduct(productRequest);
+                Product newProduct = objectMapper.convertValue(productRequest, Product.class);
                 return productRepository.save(newProduct);
             } else {
                 throw new DataIntegrityViolationException("Product already exists");
@@ -102,7 +100,7 @@ public class ProductService {
         if (product.isEmpty()) {
             throw new NotFoundException("Product not found");
         }
-        return product.get();
+        return product.orElseThrow();
     }
 
     // Method to find product names containing the input parameter
