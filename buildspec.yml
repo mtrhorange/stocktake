@@ -1,0 +1,31 @@
+version: 0.2
+
+#env:
+    #variables:
+        # key: "value"
+        # key: "value"
+    #parameter-store:
+        # key: "value"
+        # key: "value"
+
+phases:
+    install:
+        commands:
+            - export MAVEN_USER_HOME=`pwd`/.maven
+            # - ./mvnw com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v10.13.0 -DnpmVersion=6.4.1 -Dmaven.repo.local=$MAVEN_USER_HOME
+            # - ./mvnw com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
+    pre_build:
+        commands:
+            - export MAVEN_USER_HOME=`pwd`/.maven
+    build:
+        commands:
+            - ./mvnw -Pprod
+    post_build:
+        commands:
+            - printf '[{"name":"your.task.definition.container.name","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+    files: '**/*'
+cache:
+    paths:
+        - .maven/
