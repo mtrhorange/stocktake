@@ -19,7 +19,7 @@ phases:
             - export MAVEN_USER_HOME=`pwd`/.maven
     build:
         commands:
-            - ./mvnw -Pprod
+            - ./mvnw -Pprod clean verify
     post_build:
         commands:
             - printf '[{"name":"your.task.definition.container.name","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
