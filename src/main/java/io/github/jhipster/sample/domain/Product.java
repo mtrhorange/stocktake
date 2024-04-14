@@ -38,7 +38,14 @@ public class Product {
         // default no-arg constructor
     }
 
-    public Product(String name, String description, int quantity, long price, String category) {
+    public Product(String name, String description, int quantity, long price) {
+        this.name = name;
+        this.description = description;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    public Product(String name, String description, int quantity, long price, Category category) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;

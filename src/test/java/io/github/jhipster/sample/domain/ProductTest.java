@@ -11,9 +11,9 @@ public class ProductTest {
     @Test
     void equalsVerifier() throws Exception {
         // given
-        Product product1 = new Product("Phone", "Apple iPhone ProMax15", 10, 500, "Electronics");
-        Product product2 = new Product("Phone", "Apple iPhone ProMax15", 10, 500, "Electronics");
-        Product product3 = new Product("Bedsheet", "IKEA Sky Blue Single", 20, 100, "Lifestyle");
+        Product product1 = new Product("Phone", "Apple iPhone ProMax15", 10, 500);
+        Product product2 = new Product("Phone", "Apple iPhone ProMax15", 10, 500);
+        Product product3 = new Product("Bedsheet", "IKEA Sky Blue Single", 20, 100);
         // test for equality
         assertThat(product1).isNotEqualTo(product3); // different products
 
