@@ -7,11 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * A DTO for the {@link io.github.jhipster.sample.domain.Category} entity.
- */
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class CategoryDTO implements Serializable {
+public class CategoryProductDTO implements Serializable {
 
     private Long categoryId;
 
@@ -21,7 +18,7 @@ public class CategoryDTO implements Serializable {
     @JsonProperty("description")
     private String description;
 
-    private List<ProductDTO> products;
+    private Long productCount;
 
     public Long getCategoryId() {
         return categoryId;
@@ -47,11 +44,11 @@ public class CategoryDTO implements Serializable {
         this.description = description;
     }
 
-    public List<ProductDTO> getProducts() {
-        return products;
+    public Long getProductCount() {
+        return productCount;
     }
 
-    public void setProducts(List<ProductDTO> products) {
-        this.products = products;
+    public void setProductCount(Long productCount) {
+        this.productCount = productCount;
     }
 }

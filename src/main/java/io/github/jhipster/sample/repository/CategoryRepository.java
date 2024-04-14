@@ -19,4 +19,13 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     long deleteByCategoryId(Long id);
 
     void deleteByCategoryIdIn(Long[] id);
+
+    @Query(
+        value = "SELECT c.category_id, c.name, c.description, COUNT(p.product_id) AS product_count\n" +
+        "FROM category c\n" +
+        "LEFT JOIN product p ON c.category_id = p.category_id\n" +
+        "GROUP BY c.category_id;",
+        nativeQuery = true
+    )
+    List<Object[]> findAllWithCount();
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.jhipster.sample.domain.Product;
 import io.github.jhipster.sample.repository.ProductRepository;
 import io.github.jhipster.sample.request.productRequest;
+import io.github.jhipster.sample.service.dto.ProductDTO;
 import jakarta.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     // Method to add a product
-    public Product addProduct(productRequest productRequest) throws SQLIntegrityConstraintViolationException {
+    public Product addProduct(ProductDTO productRequest) throws SQLIntegrityConstraintViolationException {
         try {
             if (!productRepository.existsByName(productRequest.getName())) {
                 ObjectMapper objectMapper = new ObjectMapper();

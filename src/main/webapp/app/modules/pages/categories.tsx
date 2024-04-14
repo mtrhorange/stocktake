@@ -16,6 +16,9 @@ import Tooltip from '@mui/material/Tooltip';
 import { Edit, Delete } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 interface Data {
   id: number;
@@ -33,12 +36,12 @@ function createData(id: number, name: string, products: number, desc: string): D
   };
 }
 
-const rows = [
-  createData(1, 'Bags', 5, 'Backpacks, slingbags'),
-  createData(2, 'Tshirts', 7, 'Short sleeve tshirts'),
-  createData(3, 'Jeans', 4, 'Denim jeans'),
-  createData(4, 'Cakes', 3, 'Cakes'),
-];
+// const rows = [
+//   createData(1, 'Bags', 5, 'Backpacks, slingbags'),
+//   createData(2, 'Tshirts', 7, 'Short sleeve tshirts'),
+//   createData(3, 'Jeans', 4, 'Denim jeans'),
+//   createData(4, 'Cakes', 3, 'Cakes'),
+// ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -162,56 +165,6 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: theme => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Inventory
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <>
-          <Tooltip title="Edit">
-            <IconButton>
-              <Edit />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton>
-              <Delete />
-            </IconButton>
-          </Tooltip>
-        </>
-      ) : (
-        <>
-          <Button variant="contained" sx={{ marginRight: '10px' }} href="/category">
-            Add
-          </Button>
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      )}
-    </Toolbar>
-  );
-}
 const drawerWidth = 240;
 const columns: GridColDef[] = [
   {
@@ -250,6 +203,34 @@ export const Categories = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState([]);
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get('/api/category/getAllCategories');
+
+      const data = res.data;
+      const dataRows = [];
+      for (let i = 0; i < data.length; i++) {
+        const obj = data[i];
+        dataRows.push(createData(obj.categoryId, obj.name, obj.productCount, obj.description));
+      }
+      setRows(dataRows);
+    } catch (error) {
+      console.error('Error fetching data', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const onEdit = () => {
+    navigate('/category', {
+      state: { data: selected[0] },
+    });
+  };
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -298,8 +279,61 @@ export const Categories = () => {
 
   const visibleRows = React.useMemo(
     () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, rows],
   );
+
+  function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+    const { numSelected } = props;
+
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: theme => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+            Inventory
+          </Typography>
+        )}
+        {numSelected > 0 ? (
+          <>
+            {numSelected === 1 && (
+              <Tooltip title="Edit" onClick={onEdit}>
+                <IconButton>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Delete">
+              <IconButton>
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : (
+          <>
+            <Button variant="contained" sx={{ marginRight: '10px' }} href="/product">
+              Add
+            </Button>
+            <Tooltip title="Filter list">
+              <IconButton>
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+      </Toolbar>
+    );
+  }
 
   return (
     <>
