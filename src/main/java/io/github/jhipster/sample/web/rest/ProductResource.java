@@ -3,6 +3,7 @@ package io.github.jhipster.sample.web.rest;
 import io.github.jhipster.sample.domain.Product;
 import io.github.jhipster.sample.request.productRequest;
 import io.github.jhipster.sample.service.ProductService;
+import io.github.jhipster.sample.service.dto.ProductDTO;
 import jakarta.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -35,8 +36,8 @@ public class ProductResource {
     }
 
     @PostMapping("/createProduct")
-    public Product createProduct(@Valid @RequestBody productRequest prodRequest) throws SQLIntegrityConstraintViolationException {
-        return productService.addProduct(prodRequest);
+    public Product createProduct(@Valid @RequestBody ProductDTO productDTO) throws SQLIntegrityConstraintViolationException {
+        return productService.addProduct(productDTO);
     }
 
     @DeleteMapping("/deleteProduct/{id}")

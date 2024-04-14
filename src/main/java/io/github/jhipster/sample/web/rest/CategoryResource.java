@@ -3,6 +3,7 @@ package io.github.jhipster.sample.web.rest;
 import io.github.jhipster.sample.domain.Category;
 import io.github.jhipster.sample.service.CategoryService;
 import io.github.jhipster.sample.service.dto.CategoryDTO;
+import io.github.jhipster.sample.service.dto.CategoryProductDTO;
 import jakarta.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -20,8 +21,8 @@ public class CategoryResource {
     private CategoryService categoryService;
 
     @GetMapping("/getAllCategories")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public List<CategoryProductDTO> getAllCategories() {
+        return categoryService.getAllCategoriesWithCount();
     }
 
     @GetMapping("/getCategory/{categoryId}")
