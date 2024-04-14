@@ -1,5 +1,6 @@
 package io.github.jhipster.sample.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,9 @@ public class Product {
     @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private Long categoryId;
+
     private String name;
 
     private String description;
@@ -18,6 +22,11 @@ public class Product {
     private int quantity;
 
     private long price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    @JsonBackReference
+    private Category category;
 
     // Constructors, Getters, and Setters
 
@@ -38,6 +47,10 @@ public class Product {
 
     public void setProductID(Long productID) {
         this.productId = productID;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 
     public String getName() {
@@ -70,5 +83,13 @@ public class Product {
 
     public void setPrice(long price) {
         this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
