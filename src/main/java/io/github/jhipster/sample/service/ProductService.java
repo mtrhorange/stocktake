@@ -71,6 +71,7 @@ public class ProductService {
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice());
         existingProduct.setQuantity(updatedProduct.getQuantity());
+        existingProduct.setCategory(updatedProduct.getCategory());
 
         // Save the updated existingProduct to the database
         productRepository.save(existingProduct);
@@ -97,10 +98,10 @@ public class ProductService {
 
     public Product findProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
+        if (!product.isPresent()) {
             throw new NotFoundException("Product not found");
         }
-        return product.orElseThrow();
+        return product.orElseThrow(() -> new NotFoundException("Product not found"));
     }
 
     // Method to find product names containing the input parameter

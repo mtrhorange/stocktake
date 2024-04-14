@@ -1,12 +1,13 @@
 package io.github.jhipster.sample.service.dto;
 
 import io.github.jhipster.sample.domain.Category;
+import io.github.jhipster.sample.domain.Product;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A DTO for the {@link io.github.jhipster.sample.domain.Product} entity.
+ * A DTO for the {@link Product} entity.
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ProductDTO implements Serializable {

@@ -15,12 +15,16 @@ public class Product {
     @Column(name = "category_id", insertable = false, updatable = false)
     private Long categoryId;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "quantity")
     private int quantity;
 
+    @Column(name = "price")
     private long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,14 +35,15 @@ public class Product {
     // Constructors, Getters, and Setters
 
     public Product() {
-        // Default constructor
+        // default no-arg constructor
     }
 
-    public Product(String name, String description, int quantity, long price) {
+    public Product(String name, String description, int quantity, long price, String category) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
+        this.category = category;
     }
 
     public Long getProductID() {
