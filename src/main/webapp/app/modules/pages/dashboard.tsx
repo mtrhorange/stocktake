@@ -120,20 +120,6 @@ export const Dashboard = () => {
             ))}
           </tbody>
         </table>
-        <br></br>
-        <div>
-          <Typography variant="h4" noWrap component="div">
-            Product Dashboard
-          </Typography>
-          {/* Render your product data here */}
-          <ul>
-            {products.map(product => (
-              <li key={product.id}>
-                {product.name}, {product.quantity}
-              </li>
-            ))}
-          </ul>
-        </div>
       </Box>
     </>
   );
